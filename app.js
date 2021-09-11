@@ -1,10 +1,12 @@
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import md5 from "md5";
+import bcryptjs from "bcryptjs";
 
-// initialise env config
+//initialise env config
 dotenv.config();
+//initialise bcrypt salt rounds
+const salt = bcryptjs.genSaltSync(10);
 
 // ==================== SERVER connection ======================= //
 const app = express();
@@ -46,11 +48,16 @@ app
 		User.findOne({ username: req.body.username }, (err, result) => {
 			if (err) console.log(err);
 			else if (!result) console.log("User not found");
-			else if (result.password !== md5(req.body.password))
-				console.log("Incorrect password");
 			else {
-				console.log("Login successful");
-				res.render("secrets.ejs");
+				const isMatch = bcryptjs.compareSync(
+					req.body.password,
+					result.password
+				);
+				if (!isMatch) console.log("Incorrect password");
+				else {
+					console.log("Login successful");
+					res.render("secrets.ejs");
+				}
 			}
 		});
 	});
@@ -61,9 +68,10 @@ app
 		res.render("register.ejs");
 	})
 	.post((req, res) => {
+		var hash = bcryptjs.hashSync(req.body.password, salt);
 		const newUser = new User({
 			username: req.body.username,
-			password: md5(req.body.password),
+			password: hash,
 		});
 		newUser.save((err) => {
 			if (err) console.log(err);

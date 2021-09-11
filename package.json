@@ -1,9 +1,9 @@
 {
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"dotenv": "^10.0.0",
 		"ejs": "^3.1.6",
 		"express": "^4.17.1",
-		"md5": "^2.3.0",
 		"mongoose": "^5.13.8",
 		"nodemon": "^2.0.12",
 		"remove": "^0.1.5"
