@@ -1,6 +1,10 @@
+import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import encrypt from "mongoose-encryption";
+
+// initialise env config
+dotenv.config();
 
 // ==================== SERVER connection ======================= //
 const app = express();
@@ -27,8 +31,10 @@ const userSchema = new mongoose.Schema({
 });
 
 //Encrypt fields
-const secret = "ATemporarySecretForTutorialPurposes";
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+userSchema.plugin(encrypt, {
+	secret: process.env.SECRET,
+	encryptedFields: ["password"],
+});
 
 //User Model
 const User = new mongoose.model("Users", userSchema);

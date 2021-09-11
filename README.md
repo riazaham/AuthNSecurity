@@ -6,6 +6,9 @@ Level 1:
 Store username and password as plain text in database
 Retrieved from database as plain text
 
+=== downsides ===
+- password exposed in plain text -> easily hackable
+
 Level 2:
 Store username as plain text
 Store password as encrypted data
