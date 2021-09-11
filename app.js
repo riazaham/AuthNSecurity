@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import encrypt from "mongoose-encryption";
+import md5 from "md5";
 
 // initialise env config
 dotenv.config();
@@ -30,12 +30,6 @@ const userSchema = new mongoose.Schema({
 	password: String,
 });
 
-//Encrypt fields
-userSchema.plugin(encrypt, {
-	secret: process.env.SECRET,
-	encryptedFields: ["password"],
-});
-
 //User Model
 const User = new mongoose.model("Users", userSchema);
 
@@ -52,7 +46,7 @@ app
 		User.findOne({ username: req.body.username }, (err, result) => {
 			if (err) console.log(err);
 			else if (!result) console.log("User not found");
-			else if (result.password !== req.body.password)
+			else if (result.password !== md5(req.body.password))
 				console.log("Incorrect password");
 			else {
 				console.log("Login successful");
@@ -69,7 +63,7 @@ app
 	.post((req, res) => {
 		const newUser = new User({
 			username: req.body.username,
-			password: req.body.password,
+			password: md5(req.body.password),
 		});
 		newUser.save((err) => {
 			if (err) console.log(err);
