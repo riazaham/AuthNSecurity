@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import encrypt from "mongoose-encryption";
 
 // ==================== SERVER connection ======================= //
 const app = express();
@@ -24,6 +25,10 @@ const userSchema = new mongoose.Schema({
 	username: String,
 	password: String,
 });
+
+//Encrypt fields
+const secret = "ATemporarySecretForTutorialPurposes";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
 
 //User Model
 const User = new mongoose.model("Users", userSchema);
